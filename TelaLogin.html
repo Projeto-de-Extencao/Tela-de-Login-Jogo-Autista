@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-image: radial-gradient(circle at center,
+                    #e6e6fa 0%,
+                    #d8bfd8 40%,
+                    #b0a0cc 80%,
+                    #9580b8 100%);
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 50px;
+            height: 500px;
+            border-radius: 45px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        .espaco-logo {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 10px auto;
+            border: 2px dashed #b0a0cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9580b8;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f8f6fb;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: black;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .campo {
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid black;
+            background-color: #BFDDF3;
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #D3B9FA;
+            color: black;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #7d64a2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <div class="espaco-logo">LOGO</div>
+
+        <h1>BEM VINDO!!</h1>
+
+        <div class="campo">
+            <label>Nome:</label>
+            <input type="text" id="nomeUsuario" placeholder="Digite seu nome...">
+        </div>
+
+        <div class="campo">
+            <label>Idade:</label>
+            <input type="number" id="idadeUsuario" placeholder="Sua idade..." min="0">
+        </div>
+
+        <button id="btnEntrar">Entrar</button>
+    </main>
+
+    <script>
+        const botao = document.getElementById('btnEntrar');
+        const campoNome = document.getElementById('nomeUsuario');
+        const campoIdade = document.getElementById('idadeUsuario');
+
+        botao.addEventListener('click', function () {
+            const nome = campoNome.value;
+            const idade = campoIdade.value;
+
+            if (nome === '' || idade === '') {
+                alert("Por favor, preencha todos os campos!");
+            } else {
+                alert("Olá " + nome + "! Você tem " + idade + " anos. Acesso realizado com sucesso!");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
