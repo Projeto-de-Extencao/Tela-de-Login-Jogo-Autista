@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo das Descobertas</title>
+    <style>
+        /* =========================================
+           1. VARIÁVEIS E CONFIGURAÇÕES GERAIS
+           ========================================= */
+        :root {
+            --azul: #4a90e2;
+            --verde: #81c784;
+            --laranja: #ffb74d;
+            --rosa: #ff85a1;
+            --roxo: #a29bfe;
+            --ouro: #f1c40f;
+
+            /* Cores do Novo Design */
+            --input-bg: #BFDDF3;
+            --btn-primario: #D3B9FA;
+            --btn-primario-hover: #7d64a2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            /* Novo Fundo com Degradê Radial */
+            background-image: radial-gradient(circle at center, #e6e6fa 0%, #d8bfd8 40%, #b0a0cc 80%, #9580b8 100%);
+        }
+
+        #game-container {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 45px;
+            /* Arredondamento da sua tela */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Botão de Som Flutuante */
+        #btn-sound {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        #btn-sound:hover {
+            transform: scale(1.1);
+        }
+
+        /* Botões Padrão do Jogo */
+        .btn {
+            background-color: var(--btn-primario);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-primario-hover);
+            color: white;
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-back {
+            background: #bbb;
+            box-shadow: 0 4px 0 #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        /* =========================================
+           2. TELA 1: LOGIN
+           ========================================= */
+        .login-wrapper {
+            max-width: 350px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .logo-img {
+            width: 400px;
+            height: auto;
+        }
+
+        #view-login h1 {
+            color: black;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .campo {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid black;
+            background-color: var(--input-bg);
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* =========================================
+           3. TELA 2: MUNDOS
+           ========================================= */
+        .map-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-card {
+            width: calc(50% - 10px);
+            padding: 25px 10px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.1);
+            position: relative;
+            box-sizing: border-box;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .check-mark {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 30px;
+            display: none;
+        }
+
+        /* =========================================
+           4. TELA 3: TRILHA DE FASES
+           ========================================= */
+        .trail-container {
+            position: relative;
+            width: 100%;
+            min-width: 400px;
+            height: 60vh;
+            min-height: 500px;
+            background-size: 100% 100%;
+            background: #fdfdfd;
+            border-radius: 20px;
+            margin: 15px 0;
+            border: 2px solid #eee;
+            z-index: 1;
+        }
+
+        .trail-container::before {
+            content: '';
+            display: none;
+            position: absolute;
+            top: 58px;
+            bottom: 58px;
+            left: 45%;
+            width: 8px;
+            background: #e0e0e0;
+            transform: translateX(-50%);
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        .node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            cursor: not-allowed;
+            transition: 0.3s;
+            border: 4px solid white;
+            z-index: 3;
+        }
+
+        .node.active {
+            background: var(--roxo);
+            cursor: pointer;
+            box-shadow: 0 5px 0 #7d64a2;
+        }
+
+        .node.done {
+            background: var(--verde);
+            cursor: pointer;
+            box-shadow: 0 5px 0 #61a864;
+        }
+
+        .map-icon {
+            font-size: 50px;
+            display: block;
+            background: #fdfdfd;
+            padding: 5px;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        /* =========================================
+           5. TELA 4: JOGABILIDADE
+           ========================================= */
+        .grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .card {
+            font-size: 50px;
+            padding: 10px;
+            background: #eee;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            min-width: 80px;
+            transition: transform 0.3s, background 0.3s, border-color 0.3s;
+        }
+
+        .card.correct {
+            border-color: var(--verde) !important;
+            background: #e8f5e9 !important;
+            transform: scale(1.1);
+        }
+
+        .card.wrong {
+            border-color: var(--rosa) !important;
+            background: #ffebee !important;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-5px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .drop-zone {
+            width: 85px;
+            height: 85px;
+            border: 3px dashed #ccc;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            opacity: 0.4;
+        }
+
+        .drop-zone.filled {
+            opacity: 1;
+            border: 3px solid var(--verde);
+            background: #e8f5e9;
+        }
+
+        /* =========================================
+           6. TELAS 5 e 6: FINAIS
+           ========================================= */
+        #view-grand-finale {
+            background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)), url('comemoracao.jpeg');
+            background-size: cover;
+            background-position: center;
+            padding: 40px 20px;
+            border-radius: 30px;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+        }
+
+        .medal-icon {
+            font-size: 100px;
+            margin: 20px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .trophy-shelf {
+            font-size: 40px;
+            margin: 20px 0;
+            letter-spacing: 15px;
+        }
+
+        /* Efeito Especial dos Balões */
+        .balloon {
+            position: fixed;
+            bottom: -100px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: floatUp linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(-10deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+                transform: translateY(-10vh) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-120vh) rotate(20deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="trilha.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="game-container">
+
+        <button id="btn-sound" onclick="Game.toggleSound()" title="Som">🔊</button>
+
+        <div id="view-login">
+            <div class="login-wrapper">
+                <img src="logoLumiBdefinitivo.png" alt="Logo do Jogo" class="logo-img">
+                <h1>BEM VINDO!!</h1>
+
+                <div class="campo">
+                    <label>Nome:</label>
+                    <input type="text" id="nomeUsuario" placeholder="Digite seu nome...">
+                </div>
+
+                <div class="campo">
+                    <label>Idade:</label>
+                    <input type="number" id="idadeUsuario" placeholder="Sua idade..." min="0">
+                </div>
+
+                <button class="btn btn-login" onclick="Game.doLogin()">Entrar</button>
+            </div>
+        </div>
+
+        <div id="view-worlds" class="hidden">
+            <h3 id="txt-welcome" style="margin-bottom: 25px; font-size: 20px;"></h3>
+            <div class="map-grid" id="worlds-grid">
+                <div id="card-identificacao" class="category-card" style="background: var(--azul);"
+                    onclick="Game.openTrail('identificacao')"><span class="check-mark">✅</span>⭐ Exploração</div>
+                <div id="card-emocoes" class="category-card" style="background: var(--rosa);"
+                    onclick="Game.openTrail('emocoes')"><span class="check-mark">✅</span>😊 Sentimentos</div>
+                <div id="card-intrusos" class="category-card" style="background: var(--laranja);"
+                    onclick="Game.openTrail('intrusos')"><span class="check-mark">✅</span>👟 O Intruso</div>
+                <div id="card-quantidades" class="category-card" style="background: var(--verde);"
+                    onclick="Game.openTrail('quantidades')"><span class="check-mark">✅</span>🔢 Contagem</div>
+                <div id="card-arrastar" class="category-card" style="background: var(--roxo);"
+                    onclick="Game.openTrail('arrastar')"><span class="check-mark">✅</span>🧩 Sombras</div>
+            </div>
+        </div>
+
+        <div id="view-trail" class="hidden">
+            <button class="btn btn-back" onclick="Game.showView('view-worlds')">⬅️ Voltar ao Mapa</button>
+            <h2 id="txt-trail-title">Sua Jornada</h2>
+            <div class="trail-container" id="trail-nodes"></div>
+        </div>
+
+        <div id="view-play" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items: center;">
+                <button class="btn btn-back" onclick="Game.showView('view-trail')">⬅️ Abandonar Fase</button>
+                <b id="txt-level-num" style="color: var(--roxo); font-size: 18px;"></b>
+            </div>
+            <h2 id="txt-task"></h2>
+            <div id="area-1" class="grid"></div>
+            <div id="area-2" class="grid"></div>
+            <div id="txt-feedback" style="height:30px; font-weight:bold; font-size:20px; margin:10px;"></div>
+            <button id="btn-next" class="btn hidden" onclick="Game.finishLevel()">Continuar ➡️</button>
+        </div>
+
+        <div id="view-win" class="hidden">
+            <h1 style="font-size: 50px; margin-bottom: -15px; position: relative; z-index: 2; line-height: 1;">
+                🏆Vencedor🏆</h1>
+            <h1 id="win-icon" style="font-size: 80px; line-height: 1;"></h1>
+            <h1 id="win-title">Incrível!</h1>
+            <p>Você dominou este mundo!</p>
+            <button class="btn" onclick="Game.checkUltimateVictory()">Verificar Progresso Total</button>
+        </div>
+
+        <div id="view-grand-finale" class="hidden">
+            <span class="medal-icon">🎖️</span>
+
+            <h1 style="color: var(--ouro); font-size: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">PARABÉNS, SUPER
+                EXPLORADOR DA ILHA DE LUMA!</h1>
+            <p>Você completou todos os desafios do Mundo das Descobertas!</p>
+            <div class="trophy-shelf" id="final-trophies">🚀🏰🏝️🏔️🌳</div>
+            <p>Você é nota 10! 🌟</p>
+            <button class="btn" style="background: var(--verde); color: white;" onclick="location.reload()">Jogar
+                Novamente 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const Game = {
+            // =========================================
+            // 1. ESTADO DO JOGO
+            // =========================================
+            userName: "",
+            userAge: "",
+            currentCat: "",
+            currentIdx: 0,
+            isMuted: false,
+            progress: { identificacao: 0, emocoes: 0, intrusos: 0, quantidades: 0, arrastar: 0 },
+
+            // =========================================
+            // 2. CONFIGURAÇÕES E FASES
+            // =========================================
+            meta: {
+                identificacao: { start: "🏠", end: "🚀", title: "Missão Espacial", bg: "Primeirocaminho.jpeg", startPos: { left: 50, top: 10 }, endPos: { left: 55, top: 92 }, Coords: [{ left: 60, top: 25 }, { left: 53, top: 44 }, { left: 39, top: 60 }, { left: 56, top: 69 }, { left: 43, top: 85 }] },
+                emocoes: { start: "🏠", end: "🏰", title: "Reino dos Sentimentos", bg: "SegundoCaminho.jpeg", startPos: { left: 56, top: 10 }, endPos: { left: 60, top: 90 }, Coords: [{ left: 47, top: 28 }, { left: 58, top: 48 }, { left: 43, top: 61 }, { left: 56, top: 72 }, { left: 45, top: 86 }] },
+                intrusos: { start: "🏠", end: "🏝️", title: "Ilha Misteriosa", bg: "TerceiroCaminho.jpeg", startPos: { left: 45, top: 10 }, endPos: { left: 44, top: 92 }, Coords: [{ left: 37, top: 27 }, { left: 49, top: 35 }, { left: 45, top: 53 }, { left: 56, top: 62 }, { left: 53, top: 80 }] },
+                quantidades: { start: "🏠", end: "🏔️", title: "Montanha dos Números", bg: "QuartoCaminho.jpeg", startPos: { left: 50, top: 9 }, endPos: { left: 49, top: 92 }, Coords: [{ left: 47, top: 30 }, { left: 57, top: 40 }, { left: 56, top: 60 }, { left: 45, top: 70 }, { left: 39, top: 86 }] },
+                arrastar: { start: "🏠", end: "🌳", title: "Floresta Mágica", bg: "QuintoCaminho.jpeg", startPos: { left: 56, top: 9 }, endPos: { left: 53, top: 90 }, Coords: [{ left: 53, top: 30 }, { left: 59, top: 47 }, { left: 43, top: 55 }, { left: 55, top: 70 }, { left: 41, top: 80 }] }
+            },
+
+            levels: {
+                identificacao: [
+                    { type: 'click', task: 'Ache a Estrela', items: ['🍎', '🎈', '⭐', '🍀', '💎'], correct: '⭐' },
+                    { type: 'click', task: 'Encontre o Sol', items: ['☁️', '🌙', '☀️', '⭐', '🌈'], correct: '☀️' },
+                    { type: 'click', task: 'Cadê a Borboleta?', items: ['🐜', '🐝', '🦋', '🕷️', '🦗'], correct: '🦋' },
+                    { type: 'click', task: 'Ache o Avião', items: ['🚗', '🚲', '✈️', '🚢', '🚜'], correct: '✈️' },
+                    { type: 'click', task: 'Onde está o Presente?', items: ['📦', '🎁', '🛍️', '🎒', '💼'], correct: '🎁' }
+                ],
+                emocoes: [
+                    { type: 'click', task: 'Quem está Feliz?', items: ['😢', '😡', '😊', '😴', '🤢'], correct: '😊' },
+                    { type: 'click', task: 'Quem está Triste?', items: ['😂', '😎', '😢', '🤩', '😜'], correct: '😢' },
+                    { type: 'click', task: 'Quem está Bravo?', items: ['😇', '😡', '😱', '😍', '🤔'], correct: '😡' },
+                    { type: 'click', task: 'Quem está com Sono?', items: ['😴', '🙄', '🥳', '🤓', '🤡'], correct: '😴' },
+                    { type: 'click', task: 'Quem está Assustado?', items: ['🥶', '😱', '🤤', '🤠', '🤫'], correct: '😱' }
+                ],
+                intrusos: [
+                    { type: 'click', task: 'O que NÃO é fruta?', items: ['🍎', '🍌', '👟', '🍇', '🍓'], correct: '👟' },
+                    { type: 'click', task: 'O que NÃO é animal?', items: ['🐶', '🐱', '🦁', '🚗', '🐘'], correct: '🚗' },
+                    { type: 'click', task: 'O que NÃO é de comer?', items: ['🍕', '🍔', '🍦', '🔨', '🍎'], correct: '🔨' },
+                    { type: 'click', task: 'O que NÃO é brinquedo?', items: ['🧸', '🪁', '🏐', '🥦', '🪀'], correct: '🥦' },
+                    { type: 'click', task: 'O que NÃO usamos no frio?', items: ['🧤', '🧣', '🧥', '🩱', '🧦'], correct: '🩱' }
+                ],
+                quantidades: [
+                    { type: 'click', task: 'Onde tem 3 bolas?', items: ['⚽', '⚽⚽', '⚽⚽⚽', '⚽⚽⚽⚽'], correct: '⚽⚽⚽' },
+                    { type: 'click', task: 'Onde tem 1 coração?', items: ['❤️❤️', '❤️', '❤️❤️❤️', '❤️❤️❤️❤️'], correct: '❤️' },
+                    { type: 'click', task: 'Onde tem 5 estrelas?', items: ['⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'], correct: '⭐⭐⭐⭐⭐' },
+                    { type: 'click', task: 'Onde tem 2 carros?', items: ['🚗', '🚗🚗', '🚗🚗🚗', '🚗🚗🚗🚗'], correct: '🚗🚗' },
+                    { type: 'click', task: 'Onde tem 4 lápis?', items: ['✏️', '✏️✏️', '✏️✏️✏️', '✏️✏️✏️✏️'], correct: '✏️✏️✏️✏️' }
+                ],
+                arrastar: [
+                    { type: 'drag', task: 'Combine as Frutas', pairs: [{ id: '1', s: '🍎' }, { id: '2', s: '🍌' }, { id: '3', s: '🍇' }] },
+                    { type: 'drag', task: 'Combine os Climas', pairs: [{ id: '4', s: '☀️' }, { id: '5', s: '🌧️' }, { id: '6', s: '❄️' }] },
+                    { type: 'drag', task: 'Combine os Animais', pairs: [{ id: '7', s: '🐶' }, { id: '8', s: '🐱' }, { id: '9', s: '🦁' }] },
+                    { type: 'drag', task: 'Combine as Formas', pairs: [{ id: 'a', s: '🔴' }, { id: 'b', s: '🟦' }, { id: 'c', s: '🟡' }] },
+                    { type: 'drag', task: 'Combine as Cores', pairs: [{ id: 'd', s: '❤️' }, { id: 'e', s: '💚' }, { id: 'f', s: '💙' }, { id: 'g', s: '💛' }] }
+                ]
+            },
+
+            // =========================================
+            // 3. CONTROLE GERAL E ÁUDIO
+            // =========================================
+            toggleSound() {
+                this.isMuted = !this.isMuted;
+                document.getElementById('bg-music').muted = this.isMuted;
+                document.getElementById('btn-sound').innerText = this.isMuted ? "🔇" : "🔊";
+            },
+
+            showView(id) {
+                document.querySelectorAll('#game-container > div').forEach(v => {
+                    if (v.id !== 'btn-sound') v.classList.add('hidden');
+                });
+                document.getElementById(id).classList.remove('hidden');
+                if (id === 'view-worlds') this.updateWorldCards();
+            },
+
+            // =========================================
+            // 4. LÓGICA DA TELA 1 (LOGIN)
+            // =========================================
+            doLogin() {
+                const inputNome = document.getElementById('nomeUsuario').value;
+                const inputIdade = document.getElementById('idadeUsuario').value;
+
+                // Validação solicitada (Alerta de campos vazios)
+                if (inputNome === '' || inputIdade === '') {
+                    alert("Por favor, preencha todos os campos!");
+                    return; // Impede de avançar se estiver vazio
+                }
+
+                this.userName = inputNome;
+                this.userAge = inputIdade;
+
+                // Mensagem de Sucesso (Opcional, comentada para não travar o fluxo, mas você pode usar)
+                // alert("Olá " + this.userName + "! Você tem " + this.userAge + " anos. Acesso realizado com sucesso!");
+
+                const hour = new Date().getHours();
+                let periodo = "Boa noite!🌛";
+                if (hour >= 5 && hour < 12) periodo = "Bom dia!🌞";
+                else if (hour >= 12 && hour < 18) periodo = "Boa tarde!🌤️";
+
+                document.getElementById('txt-welcome').innerText = periodo + ", " + this.userName + "✨";
+
+                // Iniciar música num volume base super perceptível (30%)
+                const bgAudio = document.getElementById('bg-music');
+                bgAudio.load(); // Força o navegador a buscar o trilha.mp3 recém-baixado
+                bgAudio.volume = 0.3;
+                if (!this.isMuted) {
+                    bgAudio.play().catch((err) => {
+                        console.log("Atenção, o navegador impediu o som por questões de cache ou bloqueio local: ", err);
+                    });
+                }
+
+                this.showView('view-worlds');
+            },
+
+            // =========================================
+            // 5. LÓGICA DA TELA 2 (MUNDOS) E TELA 3 (TRILHA)
+            // =========================================
+            updateWorldCards() {
+                for (let cat in this.progress) {
+                    if (this.progress[cat] >= 5) {
+                        document.querySelector(`#card-${cat} .check-mark`).style.display = 'inline';
+                    }
+                }
+            },
+
+            openTrail(cat) {
+                this.currentCat = cat;
+                const container = document.getElementById('trail-nodes');
+                container.innerHTML = "";
+                const info = this.meta[cat];
+                container.style.backgroundImage = `url('${info.bg}')`;
+                container.style.backgroundSize = "cover";
+                container.style.backgroundPosition = "center";
+                document.getElementById('txt-trail-title').innerText = info.title;
+
+                // Ícone de início
+                const startIcon = document.createElement('span');
+                startIcon.className = 'map-icon';
+                startIcon.innerText = info.start;
+                startIcon.style.left = (info.startPos ? info.startPos.left : 50) + "%";
+                startIcon.style.top = (info.startPos ? info.startPos.top : 2) + "%";
+                container.appendChild(startIcon);
+
+                // Fases
+                const prog = this.progress[cat];
+                for (let i = 0; i < 5; i++) {
+                    const node = document.createElement('div');
+                    node.className = "node";
+                    node.innerText = i + 1;
+
+                    if (info.Coords && info.Coords[i]) {
+                        node.style.left = info.Coords[i].left + "%";
+                        node.style.top = info.Coords[i].top + "%";
+                    } else {
+                        node.style.left = "50%";
+                        node.style.top = (15 + i * 18) + "%";
+                    }
+
+                    if (i < prog) node.classList.add('done');
+                    else if (i === prog) node.classList.add('active');
+                    node.onclick = () => { if (i <= prog) this.startLevel(i); };
+                    container.appendChild(node);
+                }
+
+                // Ícone de fim
+                const endIcon = document.createElement('span');
+                endIcon.className = 'map-icon';
+                endIcon.innerText = info.end;
+                endIcon.style.left = (info.endPos ? info.endPos.left : 50) + "%";
+                endIcon.style.top = (info.endPos ? info.endPos.top : 96) + "%";
+                container.appendChild(endIcon);
+
+                this.showView('view-trail');
+            },
+
+            // =========================================
+            // 6. LÓGICA DA TELA 4 (JOGABILIDADE)
+            // =========================================
+            startLevel(idx) {
+                this.currentIdx = idx;
+                this.showView('view-play');
+                this.renderGame();
+            },
+
+            renderGame() {
+                const lv = this.levels[this.currentCat][this.currentIdx];
+                document.getElementById('txt-level-num').innerText = "Fase " + (this.currentIdx + 1);
+                document.getElementById('txt-task').innerText = lv.task;
+                document.getElementById('txt-feedback').innerText = "";
+                document.getElementById('btn-next').classList.add('hidden');
+
+                const a1 = document.getElementById('area-1'); a1.innerHTML = "";
+                const a2 = document.getElementById('area-2'); a2.innerHTML = "";
+
+                if (lv.type === 'click') {
+                    [...lv.items].sort(() => Math.random() - 0.5).forEach(it => {
+                        const el = document.createElement('div');
+                        el.className = 'card'; el.innerText = it;
+                        el.onclick = () => {
+                            if (it === lv.correct) {
+                                el.classList.remove('wrong');
+                                el.classList.add('correct');
+                                this.win();
+                            } else {
+                                el.classList.remove('wrong');
+                                void el.offsetWidth; // Dispara o 'reflow' p/ a animação repetir caso o erro se repita
+                                el.classList.add('wrong');
+                                document.getElementById('txt-feedback').innerText = "Tente de novo! 😊";
+                            }
+                        };
+                        a1.appendChild(el);
+                    });
+                } else {
+                    this.matches = 0;
+                    [...lv.pairs].sort(() => Math.random() - 0.5).forEach(p => {
+                        const el = document.createElement('div');
+                        el.className = 'card'; el.innerText = p.s; el.draggable = true;
+                        el.id = "d-" + p.id;
+                        el.ondragstart = (e) => e.dataTransfer.setData('text', p.id);
+                        a1.appendChild(el);
+                    });
+                    [...lv.pairs].sort(() => Math.random() - 0.5).forEach(p => {
+                        const zone = document.createElement('div');
+                        zone.className = 'drop-zone'; zone.innerText = p.s;
+                        zone.ondragover = (e) => e.preventDefault();
+                        zone.ondrop = (e) => {
+                            const id = e.dataTransfer.getData('text');
+                            if (id === p.id) {
+                                zone.classList.add('filled');
+                                document.getElementById("d-" + id).style.visibility = "hidden";
+                                this.matches++;
+                                if (this.matches === lv.pairs.length) this.win();
+                            }
+                        };
+                        a2.appendChild(zone);
+                    });
+                }
+            },
+
+            win() {
+                document.getElementById('txt-feedback').innerText = "Parabéns! ✨";
+                document.getElementById('btn-next').classList.remove('hidden');
+            },
+
+            finishLevel() {
+                if (this.currentIdx === this.progress[this.currentCat]) this.progress[this.currentCat]++;
+                if (this.progress[this.currentCat] >= 5) {
+                    document.getElementById('win-icon').innerText = this.meta[this.currentCat].end;
+                    this.showView('view-win');
+                } else {
+                    this.openTrail(this.currentCat);
+                }
+            },
+
+            // =========================================
+            // 7. LÓGICA DAS TELAS FINAIS
+            // =========================================
+            checkUltimateVictory() {
+                const allDone = Object.values(this.progress).every(p => p >= 5);
+                if (allDone) {
+                    this.showView('view-grand-finale');
+                    this.releaseBalloons();
+                } else {
+                    this.showView('view-worlds');
+                }
+            },
+
+            releaseBalloons() {
+                const emojis = ['🎈', '✨', '🎈', '🎉', '🎊', '🎀']; // Diferentes emojis temáticos
+                for (let i = 0; i < 40; i++) { // Vai espalhar 40 balões
+                    setTimeout(() => {
+                        const b = document.createElement('div');
+                        b.className = 'balloon';
+                        b.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                        b.style.left = (Math.random() * 90) + 'vw'; // Posição horizontal aleatória
+                        b.style.animationDuration = (Math.random() * 3 + 4) + 's'; // Sobe entre 4 e 7 segundos
+                        b.style.fontSize = (Math.random() * 30 + 40) + 'px'; // Tamanhos variados
+                        document.body.appendChild(b);
+
+                        // O balão desaparece e é apagado do código para não travar
+                        setTimeout(() => b.remove(), 7500);
+                    }, Math.random() * 4000); // Eles vão aparecendo de forma sortida durante 4 segundos
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>
