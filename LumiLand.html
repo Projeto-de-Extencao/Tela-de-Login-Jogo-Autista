@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo das Descobertas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="trilha.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="game-container">
+
+        <button id="btn-sound" onclick="Game.toggleSound()" title="Som">🔊</button>
+
+        <div id="view-login">
+            <div class="login-wrapper">
+                <img src="logoLumiBdefinitivo.png" alt="Logo do Jogo" class="logo-img">
+                <h1>BEM VINDO!!</h1>
+
+                <div class="campo">
+                    <label>Nome:</label>
+                    <input type="text" id="nomeUsuario" placeholder="Digite seu nome...">
+                </div>
+
+                <div class="campo">
+                    <label>Idade:</label>
+                    <input type="number" id="idadeUsuario" placeholder="Sua idade..." min="0">
+                </div>
+
+                <button class="btn btn-login" onclick="Game.doLogin()">Entrar</button>
+            </div>
+        </div>
+
+        <div id="view-worlds" class="hidden">
+            <h3 id="txt-welcome" style="margin-bottom: 25px; font-size: 20px;"></h3>
+            <div class="map-grid" id="worlds-grid">
+                <div id="card-identificacao" class="category-card" style="background: var(--azul);"
+                    onclick="Game.openTrail('identificacao')"><span class="check-mark">✅</span>⭐ Exploração</div>
+                <div id="card-emocoes" class="category-card" style="background: var(--rosa);"
+                    onclick="Game.openTrail('emocoes')"><span class="check-mark">✅</span>😊 Sentimentos</div>
+                <div id="card-intrusos" class="category-card" style="background: var(--laranja);"
+                    onclick="Game.openTrail('intrusos')"><span class="check-mark">✅</span>👟 O Intruso</div>
+                <div id="card-quantidades" class="category-card" style="background: var(--verde);"
+                    onclick="Game.openTrail('quantidades')"><span class="check-mark">✅</span>🔢 Contagem</div>
+                <div id="card-arrastar" class="category-card" style="background: var(--roxo);"
+                    onclick="Game.openTrail('arrastar')"><span class="check-mark">✅</span>🧩 Sombras</div>
+            </div>
+        </div>
+
+        <div id="view-trail" class="hidden">
+            <button class="btn btn-back" onclick="Game.showView('view-worlds')">⬅️ Voltar ao Mapa</button>
+            <h2 id="txt-trail-title">Sua Jornada</h2>
+            <div class="trail-container" id="trail-nodes"></div>
+        </div>
+
+        <div id="view-play" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items: center;">
+                <button class="btn btn-back" onclick="Game.showView('view-trail')">⬅️ Abandonar Fase</button>
+                <b id="txt-level-num" style="color: var(--roxo); font-size: 18px;"></b>
+            </div>
+            <h2 id="txt-task"></h2>
+            <div id="area-1" class="grid"></div>
+            <div id="area-2" class="grid"></div>
+            <div id="txt-feedback" style="height:30px; font-weight:bold; font-size:20px; margin:10px;"></div>
+            <button id="btn-next" class="btn hidden" onclick="Game.finishLevel()">Continuar ➡️</button>
+        </div>
+
+        <div id="view-win" class="hidden">
+            <h1 style="font-size: 50px; margin-bottom: -15px; position: relative; z-index: 2; line-height: 1;">
+                🏆Vencedor🏆</h1>
+            <h1 id="win-icon" style="font-size: 80px; line-height: 1;"></h1>
+            <h1 id="win-title">Incrível!</h1>
+            <p>Você dominou este mundo!</p>
+            <button class="btn" onclick="Game.checkUltimateVictory()">Verificar Progresso Total</button>
+        </div>
+
+        <div id="view-grand-finale" class="hidden">
+            <span class="medal-icon">🎖️</span>
+
+            <h1 style="color: var(--ouro); font-size: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">PARABÉNS, SUPER
+                EXPLORADOR DA ILHA DE LUMA!</h1>
+            <p>Você completou todos os desafios do Mundo das Descobertas!</p>
+            <div class="trophy-shelf" id="final-trophies">🚀🏰🏝️🏔️🌳</div>
+            <p>Você é nota 10! 🌟</p>
+            <button class="btn" style="background: var(--verde); color: white;" onclick="location.reload()">Jogar
+                Novamente 🔄</button>
+        </div>
+
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
